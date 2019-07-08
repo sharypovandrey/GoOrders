@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+  mysql:
+    build:
+      context: ./MySQL
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysql
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysql:/var/lib/mysql
+
+  api:
+    build:
+      context: .
+      dockerfile: Go/Dockerfile
+    environment:
+      GOOGLE_MAPS_KEY: REPLACE_ME
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/go/src/github.com/sharypovandrey/GoOrders
+    depends_on:
+      - mysql
+
+volumes:
+  mysql:
